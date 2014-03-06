@@ -6,7 +6,9 @@ begin
 
     declare @result xml;
     declare @isPushAuth BOOL;
+    declare @uacID int;
     
+    set @uacID = uac.accountInfo(@code);
     set @isPushAuth = 0;
     
     if exists (
@@ -61,7 +63,7 @@ begin
             , xmlelement(
                 'double'
                 , xmlattributes ('timeFilter' as "name")
-                , if @isPushAuth = 1 then 10 else 25 endif
+                , 8
             )
             , xmlelement(
                 'double'
@@ -112,6 +114,21 @@ begin
                 'double'
                 , xmlattributes ('transterLogs' as "name")
                 , 1
+            )
+            , xmlelement(
+                'string'
+                , xmlattributes ('supportedApplicationVersions' as "name")
+                , '2.4.1R,2.4.2R' --'any'
+            )
+            , xmlelement(
+                'string'
+                , xmlattributes ('lastApplicationVarsion' as "name")
+                , '2.4.2R'/*if @uacID in (71,73,6) then '2.4.0T1' else '2.4.0R' endif*/
+            )
+            , xmlelement(
+                'double'
+                , xmlattributes ('transterLogsPriority' as "name")
+                , if @uacID = 73 then 15 else 100 endif
             )
     ));
     
